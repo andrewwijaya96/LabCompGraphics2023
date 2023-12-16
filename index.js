@@ -216,72 +216,68 @@ const fences5 = () => {
   );
 };
 // Peashooter
-let marker = false; //Declare buat cek cuman 1 pea
-const head = () => {
-  let geo = new THREE.SphereGeometry(2.5, 64);
-  let mat = new THREE.MeshPhongMaterial({ color: "#52D017" });
-  let mesh = new THREE.Mesh(geo, mat);
-  mesh.position.set(-30, 10, 0);
-  mesh.castShadow = true;
+let marker = false //Declare buat cek cuman 1 pea
+const head = () =>{
+    let geo = new THREE.SphereGeometry(2.5, 64)
+    let mat = new THREE.MeshPhongMaterial({color: "#52D017"})
+    let mesh = new THREE.Mesh(geo, mat)
+    mesh.position.set(-30, 10, 0)
+    mesh.castShadow = true
 
-  scene.add(mesh);
+    scene.add(mesh)
 
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector3();
 
-  // Jujur ini mouseclick gua dari chatgpt yang paham, sabi di edit2 biat ga keliatan copas
-  function onMouseClick(event) {
-    if (!marker) {
-      mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-      mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, activeCam);
-      const intersect = raycaster.intersectObjects(scene.children);
-
-      // Pea muncul cuman pas klik head()
-      for (let i = 0; i < intersect.length; i++) {
-        if (intersect[i].object === mesh) {
-          pea();
-          marker = true;
-          console.log("1", marker);
+    function mouseclick(event) {
+        if(!marker){
+            mouse.x = (event.clientX/width) * 2 - 1;
+            mouse.y = -(event.clientY/height) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, activeCam);
+            const intersect = raycaster.intersectObjects(scene.children);
+            
+            // Pea muncul cuman pas klik head()
+            for (let i = 0; i < intersect.length; i++) {
+                if (intersect[i].object === mesh) {
+                    pea();
+                    marker = true;
+                }
+            }
         }
-      }
     }
-  }
-
-  window.addEventListener("click", onMouseClick, false);
-};
+    
+    window.addEventListener('click', mouseclick);
+}
 // Dynamic Object
-const pea = () => {
-  let geo = new THREE.SphereGeometry(1, 64);
-  let mat = new THREE.MeshPhongMaterial({
-    color: "#52D017",
-  });
-  let mesh = new THREE.Mesh(geo, mat);
-  mesh.castShadow = true;
-  mesh.position.set(-27, 10, 0);
+const pea = () =>{
+    let geo = new THREE.SphereGeometry(1, 64)
+    let mat = new THREE.MeshPhongMaterial({
+        color: "#52D017"
+    })
+    let mesh = new THREE.Mesh(geo, mat)
+    mesh.castShadow = true
+    mesh.position.set(-27, 10, 0)
 
-  scene.add(mesh);
+    scene.add(mesh)
 
-  const peaMove = () => {
-    mesh.position.x += 0.1;
-    renderer.render(scene, activeCam);
-    if (mesh.position.x > 10) {
-      scene.remove(mesh);
-      marker = false;
-      console.log("2", marker);
-    } else {
-      marker = true;
-      console.log("3", marker);
+    const peaMove = () =>{
+        mesh.position.x += 1
+        renderer.render(scene, activeCam)
+        if(mesh.position.x > 10){
+            scene.remove(mesh)
+            marker = false
+        }else{
+            marker = true
+        }
     }
-  };
 
-  const movement = () => {
-    requestAnimationFrame(movement);
-    peaMove();
-  };
-  peaMove();
-  movement();
+    const movement = () => {
+        requestAnimationFrame(movement); 
+        peaMove(); 
+    };
+    peaMove()
+    movement()
 };
 
 // OBJECT
