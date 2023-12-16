@@ -95,7 +95,10 @@ const spotLight = () => {
 const grass = () => {
   let geo = new THREE.PlaneGeometry(100, 75);
   let texture = new THREE.TextureLoader().load("Assets/grass.png");
-  let mat = new THREE.MeshStandardMaterial({ map: texture });
+  let mat = new THREE.MeshStandardMaterial({ 
+    map: texture,
+    side: THREE.DoubleSide
+  });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(0, 0, -7.5);
   mesh.rotateX(Math.PI / -2); //Ini harusnya perlu untuk membuat geometry menjadi flat terhadap objek/menjadi ground
@@ -284,7 +287,10 @@ const pea = () => {
 // OBJECT
 const mouth = () => {
   let geo = new THREE.CylinderGeometry(0.5, 1, 2.5, 64, 64, true);
-  let mat = new THREE.MeshPhongMaterial({ color: "#52D017" });
+  let mat = new THREE.MeshPhongMaterial({ 
+    color: "#52D017",
+    side: THREE.DoubleSide
+  });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(-26.5, 10, 0);
   mesh.castShadow = true;
