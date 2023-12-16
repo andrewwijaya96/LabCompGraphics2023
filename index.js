@@ -127,7 +127,7 @@ const zombie = () => {
 // Text
 const text = () => {
   let loader = new FontLoader().load(
-    "./three.js-r145-compressed/three.js-r145-compressed/examples/fonts/gentilis_bold.typeface.json",
+    "https://unpkg.com/three@v0.157.0/examples/fonts/gentilis_bold.typeface.json",
     function (font) {
       let geo = new TextGeometry("Plants NO Zombies", {
         font: font,
