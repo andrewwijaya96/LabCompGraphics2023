@@ -68,7 +68,6 @@ const ambientLight = () => {
   scene.add(light);
 };
 const spotLight = () => {
-  // let light = new THREE.SpotLight("#FFFFFF", 1.2, 0, Math.PI / 3, 0, 0); //Parameter beda sama soal untuk memunculkan casted shadow seperti gambar
   let light = new THREE.SpotLight("#FFFFFF", 1.2, 0);
   light.castShadow = true;
   light.position.set(-80, 40, 0);
@@ -95,11 +94,11 @@ const grass = () => {
   let texture = new THREE.TextureLoader().load("Assets/grass.png");
   let mat = new THREE.MeshStandardMaterial({ 
     map: texture,
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide // Agar tidak terlihat bolong di posisi kamera tertentu
   });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(0, 0, -7.5);
-  mesh.rotateX(Math.PI / -2); //Ini harusnya perlu untuk membuat geometry menjadi flat terhadap objek/menjadi ground
+  mesh.rotateX(Math.PI / -2); // Ini harusnya perlu untuk membuat geometry menjadi flat terhadap objek/menjadi ground
   mesh.receiveShadow = true;
 
   scene.add(mesh);
@@ -214,7 +213,7 @@ const fences5 = () => {
   );
 };
 // Peashooter
-let marker = false //Declare buat cek cuman 1 pea
+let marker = false // Declare buat cek hanya 1 pea
 const head = () =>{
     let geo = new THREE.SphereGeometry(2.5, 64)
     let mat = new THREE.MeshPhongMaterial({color: "#52D017"})
@@ -235,7 +234,7 @@ const head = () =>{
             raycaster.setFromCamera(mouse, activeCam);
             const intersect = raycaster.intersectObjects(scene.children);
             
-            // Pea muncul cuman pas klik head()
+            // Pea muncul hanya ketika klik head()
             for (let i = 0; i < intersect.length; i++) {
                 if (intersect[i].object === mesh) {
                     pea();
@@ -283,7 +282,7 @@ const mouth = () => {
   let geo = new THREE.CylinderGeometry(0.5, 1, 2.5, 64, 64, true);
   let mat = new THREE.MeshPhongMaterial({ 
     color: "#52D017",
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide // Agar tidak terlihat bolong di posisi kamera tertentu
   });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(-26.5, 10, 0);
@@ -331,12 +330,12 @@ const trunk = () => {
 };
 // Wallnut
 const wallnut = () => {
-  // let geo = new THREE.CylinderGeometry(4.5, 4.5, 3, 64, 64, false); // Ini agar tetap muncul sebagai utuh & tidak bolong
+  // let geo = new THREE.CylinderGeometry(4.5, 4.5, 3, 64, 64, false); // Gunakan ini agar tetap muncul sebagai utuh & tidak bolong
   let geo = new THREE.CylinderGeometry(4.5, 4.5, 3, 64, 64, true);
   let texture = new THREE.TextureLoader().load("Assets/wallnut.jpeg");
   let mat = new THREE.MeshPhongMaterial({
     map: texture,
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide // Agar semua bagian object terlihat di posisi kamera apapun
   });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(-17.5, 4.5, 0);
