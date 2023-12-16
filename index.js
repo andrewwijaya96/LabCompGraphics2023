@@ -68,10 +68,11 @@ const ambientLight = () => {
   scene.add(light);
 };
 const spotLight = () => {
-  let light = new THREE.SpotLight("#FFFFFF", 1.2, 0, Math.PI / 3, 0, 0); //Parameter beda sama soal
+  // let light = new THREE.SpotLight("#FFFFFF", 1.2, 0, Math.PI / 3, 0, 0); //Parameter beda sama soal untuk memunculkan casted shadow seperti gambar
+  let light = new THREE.SpotLight("#FFFFFF", 1.2, 0);
   let helper = new THREE.SpotLightHelper(light);
   light.castShadow = true;
-  light.position.set(-80, 40, 0); //Parameter beda sama soal
+  light.position.set(-80, 40, 0);
 
   const switchIntensity = (event) => {
     if (event.key === " ") {
@@ -97,7 +98,7 @@ const grass = () => {
   let mat = new THREE.MeshStandardMaterial({ map: texture });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(0, 0, -7.5);
-  mesh.rotateX(Math.PI / -2); //Parameter beda sama soal
+  mesh.rotateX(Math.PI / -2); //Ini harusnya perlu untuk membuat geometry menjadi flat terhadap objek/menjadi ground
   mesh.receiveShadow = true;
 
   scene.add(mesh);
@@ -330,9 +331,10 @@ const trunk = () => {
 };
 // Wallnut
 const wallnut = () => {
-  let geo = new THREE.CylinderGeometry(4.5, 4.5, 3, 64, 64, false); //Parameter beda sama soal
+  // let geo = new THREE.CylinderGeometry(4.5, 4.5, 3, 64, 64, false); // Ini agar tetap muncul sebagai utuh & tidak bolong
+  let geo = new THREE.CylinderGeometry(4.5, 4.5, 3, 64, 64, true);
   let texture = new THREE.TextureLoader().load("Assets/wallnut.jpeg");
-  let mat = new THREE.MeshPhongMaterial({ map: texture }); //Parameter beda sama soal
+  let mat = new THREE.MeshPhongMaterial({ map: texture });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(-17.5, 4.5, 0);
   mesh.castShadow = true;
