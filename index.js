@@ -64,13 +64,12 @@ const switchCamera = (event) => {
 const ambientLight = () => {
   let light = new THREE.AmbientLight("#FFFFFC", 0.5);
   light.position.set(0, 0, 0);
-
+  light.castShadow = false;
   scene.add(light);
 };
 const spotLight = () => {
   // let light = new THREE.SpotLight("#FFFFFF", 1.2, 0, Math.PI / 3, 0, 0); //Parameter beda sama soal untuk memunculkan casted shadow seperti gambar
   let light = new THREE.SpotLight("#FFFFFF", 1.2, 0);
-  let helper = new THREE.SpotLightHelper(light);
   light.castShadow = true;
   light.position.set(-80, 40, 0);
 
@@ -84,10 +83,9 @@ const spotLight = () => {
     }
   };
 
-  document.addEventListener("keypress", switchIntensity, false);
+  document.addEventListener("keypress", switchIntensity);
 
   scene.add(light);
-  // scene.add(helper)
 };
 
 // OBJECT
@@ -129,14 +127,14 @@ const zombie = () => {
 // Text
 const text = () => {
   let loader = new FontLoader().load(
-    "https://unpkg.com/three@v0.157.0/examples/fonts/gentilis_bold.typeface.json",
+    "./three.js-r145-compressed/three.js-r145-compressed/examples/fonts/gentilis_bold.typeface.json",
     function (font) {
       let geo = new TextGeometry("Plants NO Zombies", {
         font: font,
         size: 10,
         height: 2,
       });
-      let mat = new THREE.MeshPhongMaterial({ color: "#FFFFFF" });
+      let mat = new THREE.MeshPhongMaterial({ color: "#CCB7B6" });
       let mesh = new THREE.Mesh(geo, mat);
       mesh.position.set(-55, 20, -50);
       scene.add(mesh);
@@ -262,7 +260,7 @@ const pea = () =>{
     scene.add(mesh)
 
     const peaMove = () =>{
-        mesh.position.x += 1
+        mesh.position.x += 0.5
         renderer.render(scene, activeCam)
         if(mesh.position.x > 10){
             scene.remove(mesh)
@@ -323,7 +321,7 @@ const eyes2 = () => {
   scene.add(mesh);
 };
 const trunk = () => {
-  let geo = new THREE.CylinderGeometry(0.75, 0.75, 10, 64, 64);
+  let geo = new THREE.CylinderGeometry(0.75, 0.75, 10, 64, 64, true);
   let mat = new THREE.MeshPhongMaterial({ color: "#4BBF15" });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(-30, 5, 0);
@@ -336,7 +334,10 @@ const wallnut = () => {
   // let geo = new THREE.CylinderGeometry(4.5, 4.5, 3, 64, 64, false); // Ini agar tetap muncul sebagai utuh & tidak bolong
   let geo = new THREE.CylinderGeometry(4.5, 4.5, 3, 64, 64, true);
   let texture = new THREE.TextureLoader().load("Assets/wallnut.jpeg");
-  let mat = new THREE.MeshPhongMaterial({ map: texture });
+  let mat = new THREE.MeshPhongMaterial({
+    map: texture,
+    side: THREE.DoubleSide
+  });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(-17.5, 4.5, 0);
   mesh.castShadow = true;
@@ -347,34 +348,80 @@ const wallnut = () => {
 
 // Sky
 const skybox = () => {
-  let loaderDay = new THREE.CubeTextureLoader().load([
-    "Assets/cloudy/bluecloud_ft.jpg",
-    "Assets/cloudy/bluecloud_bk.jpg",
-    "Assets/cloudy/bluecloud_up.jpg",
-    "Assets/cloudy/bluecloud_dn.jpg",
-    "Assets/cloudy/bluecloud_rt.jpg",
-    "Assets/cloudy/bluecloud_lf.jpg",
-  ]);
-  // Size Day belom setting
+  const geo = new THREE.BoxBufferGeometry(1000, 1000, 1000);
+    const loader = new THREE.TextureLoader();
+    const matday = [
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/cloudy/bluecloud_ft.jpg'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/cloudy/bluecloud_bk.jpg'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/cloudy/bluecloud_up.jpg'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/cloudy/bluecloud_dn.jpg'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/cloudy/bluecloud_rt.jpg'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/cloudy/bluecloud_lf.jpg'),
+            side: THREE.BackSide
+        })
+    ]
+    const matnight = [
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/nightskycolor.png'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/nightskycolor.png'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/nightskycolor.png'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/nightskycolor.png'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/nightskycolor.png'),
+            side: THREE.BackSide
+        }),
+        new THREE.MeshBasicMaterial({
+            map: loader.load('Assets/nightskycolor.png'),
+            side: THREE.BackSide
+        })
+    ]
+    
+    const mesh = new THREE.Mesh(geo, matday);
+    scene.add(mesh);
 
-  let loaderNight = new THREE.TextureLoader().load([
-    "Assets/nightskycolor.png",
-  ]);
-  // Size Day belom setting
+    let switcher = false
+    const switchSky = (event) => {
+        if (event.key === ' '){
+            if (!switcher){
+                mesh.material = matnight
+                scene.add(mesh)
+                switcher = true
+            }else{
+                mesh.material = matday
+                scene.add(mesh)
+                switcher = false
+            }
+        }
+    };
 
-  scene.background = loaderDay;
-
-  const switchSky = (event) => {
-    if (event.key === " ") {
-      if (scene.background === loaderDay) {
-        scene.background = loaderNight;
-      } else {
-        scene.background = loaderDay;
-      }
-    }
-  };
-
-  document.addEventListener("keypress", switchSky, false);
+  document.addEventListener("keypress", switchSky);
 };
 
 // Window
@@ -383,7 +430,7 @@ window.onload = () => {
 
   initCameraTPS();
   initCameraFPS();
-  document.addEventListener("keypress", switchCamera, false);
+  document.addEventListener("keypress", switchCamera);
 
   grass();
   zombie();
