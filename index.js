@@ -225,7 +225,6 @@ const head = () => {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
-  // Jujur ini mouseclick gua dari chatgpt yang paham, sabi di edit2 biat ga keliatan copas
   function onMouseClick(event) {
     if (!marker) {
       mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
