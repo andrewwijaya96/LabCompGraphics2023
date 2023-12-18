@@ -1,15 +1,14 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
-import { FontLoader } from "three/addons/loaders/FontLoader.js";
+import * as THREE from "./three.js/three.js/build/three.module.js";
+import { OrbitControls } from "./three.js/three.js/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "./three.js/three.js/examples/jsm/loaders/GLTFLoader.js";
+import { TextGeometry } from "./three.js/three.js/examples/jsm/geometries/TextGeometry.js";
+import { FontLoader } from "./three.js/three.js/examples/jsm/loaders/FontLoader.js";
 
 let renderer, cameraTPS, cameraFPS, scene, activeCam;
 let width = window.innerWidth;
 let height = window.innerHeight;
 let aspect = width / height;
 
-// Default
 const init = () => {
   // scene
   scene = new THREE.Scene();
@@ -17,7 +16,6 @@ const init = () => {
   // renderer
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(width, height);
-  renderer.setClearColor("blue");
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -92,9 +90,9 @@ const spotLight = () => {
 const grass = () => {
   let geo = new THREE.PlaneGeometry(100, 75);
   let texture = new THREE.TextureLoader().load("Assets/grass.png");
-  let mat = new THREE.MeshStandardMaterial({ 
+  let mat = new THREE.MeshStandardMaterial({
     map: texture,
-    side: THREE.DoubleSide // Agar tidak terlihat bolong di posisi kamera tertentu
+    side: THREE.DoubleSide, // Agar tidak terlihat bolong di posisi kamera tertentu
   });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(0, 0, -7.5);
@@ -126,7 +124,7 @@ const zombie = () => {
 // Text
 const text = () => {
   let loader = new FontLoader().load(
-    "https://unpkg.com/three@v0.157.0/examples/fonts/gentilis_bold.typeface.json",
+    "./three.js/three.js/examples/fonts/gentilis_bold.typeface.json",
     function (font) {
       let geo = new TextGeometry("Plants NO Zombies", {
         font: font,
@@ -213,76 +211,76 @@ const fences5 = () => {
   );
 };
 // Peashooter
-let marker = false // Declare buat cek hanya 1 pea
-const head = () =>{
-    let geo = new THREE.SphereGeometry(2.5, 64)
-    let mat = new THREE.MeshPhongMaterial({color: "#52D017"})
-    let mesh = new THREE.Mesh(geo, mat)
-    mesh.position.set(-30, 10, 0)
-    mesh.castShadow = true
+let marker = false; // Declare buat cek hanya 1 pea
+const head = () => {
+  let geo = new THREE.SphereGeometry(2.5, 64);
+  let mat = new THREE.MeshPhongMaterial({ color: "#52D017" });
+  let mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(-30, 10, 0);
+  mesh.castShadow = true;
 
-    scene.add(mesh)
+  scene.add(mesh);
 
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector3();
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector3();
 
-    function mouseclick(event) {
-        if(!marker){
-            mouse.x = (event.clientX/width) * 2 - 1;
-            mouse.y = -(event.clientY/height) * 2 + 1;
-            
-            raycaster.setFromCamera(mouse, activeCam);
-            const intersect = raycaster.intersectObjects(scene.children);
-            
-            // Pea muncul hanya ketika klik head()
-            for (let i = 0; i < intersect.length; i++) {
-                if (intersect[i].object === mesh) {
-                    pea();
-                    marker = true;
-                }
-            }
+  function mouseclick(event) {
+    if (!marker) {
+      mouse.x = (event.clientX / width) * 2 - 1;
+      mouse.y = -(event.clientY / height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, activeCam);
+      const intersect = raycaster.intersectObjects(scene.children);
+
+      // Pea muncul hanya ketika klik head()
+      for (let i = 0; i < intersect.length; i++) {
+        if (intersect[i].object === mesh) {
+          pea();
+          marker = true;
         }
+      }
     }
-    
-    window.addEventListener('click', mouseclick);
-}
-// Dynamic Object
-const pea = () =>{
-    let geo = new THREE.SphereGeometry(1, 64)
-    let mat = new THREE.MeshPhongMaterial({
-        color: "#52D017"
-    })
-    let mesh = new THREE.Mesh(geo, mat)
-    mesh.castShadow = true
-    mesh.position.set(-27, 10, 0)
+  }
 
-    scene.add(mesh)
+  window.addEventListener("click", mouseclick);
+};
+// Pea yang ditembak
+const pea = () => {
+  let geo = new THREE.SphereGeometry(1, 64);
+  let mat = new THREE.MeshPhongMaterial({
+    color: "#52D017",
+  });
+  let mesh = new THREE.Mesh(geo, mat);
+  mesh.castShadow = true;
+  mesh.position.set(-27, 10, 0);
 
-    const peaMove = () =>{
-        mesh.position.x += 0.5
-        renderer.render(scene, activeCam)
-        if(mesh.position.x > 10){
-            scene.remove(mesh)
-            marker = false
-        }else{
-            marker = true
-        }
+  scene.add(mesh);
+
+  const peaMove = () => {
+    mesh.position.x += 0.5;
+    renderer.render(scene, activeCam);
+    if (mesh.position.x > 10) {
+      scene.remove(mesh);
+      marker = false;
+    } else {
+      marker = true;
     }
+  };
 
-    const movement = () => {
-        requestAnimationFrame(movement); 
-        peaMove(); 
-    };
-    peaMove()
-    movement()
+  const movement = () => {
+    requestAnimationFrame(movement);
+    peaMove();
+  };
+  peaMove();
+  movement();
 };
 
 // OBJECT
 const mouth = () => {
   let geo = new THREE.CylinderGeometry(0.5, 1, 2.5, 64, 64, true);
-  let mat = new THREE.MeshPhongMaterial({ 
+  let mat = new THREE.MeshPhongMaterial({
     color: "#52D017",
-    side: THREE.DoubleSide // Agar tidak terlihat bolong di posisi kamera tertentu
+    side: THREE.DoubleSide, // Agar tidak terlihat bolong di posisi kamera tertentu
   });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(-26.5, 10, 0);
@@ -335,7 +333,7 @@ const wallnut = () => {
   let texture = new THREE.TextureLoader().load("Assets/wallnut.jpeg");
   let mat = new THREE.MeshPhongMaterial({
     map: texture,
-    side: THREE.DoubleSide // Agar semua bagian object terlihat di posisi kamera apapun
+    side: THREE.DoubleSide, // Agar semua bagian object terlihat di posisi kamera apapun
   });
   let mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(-17.5, 4.5, 0);
@@ -348,77 +346,77 @@ const wallnut = () => {
 // Sky
 const skybox = () => {
   const geo = new THREE.BoxBufferGeometry(1000, 1000, 1000);
-    const loader = new THREE.TextureLoader();
-    const matday = [
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/cloudy/bluecloud_ft.jpg'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/cloudy/bluecloud_bk.jpg'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/cloudy/bluecloud_up.jpg'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/cloudy/bluecloud_dn.jpg'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/cloudy/bluecloud_rt.jpg'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/cloudy/bluecloud_lf.jpg'),
-            side: THREE.BackSide
-        })
-    ]
-    const matnight = [
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/nightskycolor.png'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/nightskycolor.png'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/nightskycolor.png'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/nightskycolor.png'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/nightskycolor.png'),
-            side: THREE.BackSide
-        }),
-        new THREE.MeshBasicMaterial({
-            map: loader.load('Assets/nightskycolor.png'),
-            side: THREE.BackSide
-        })
-    ]
-    
-    const mesh = new THREE.Mesh(geo, matday);
-    scene.add(mesh);
+  const loader = new THREE.TextureLoader();
+  const matday = [
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/cloudy/bluecloud_ft.jpg"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/cloudy/bluecloud_bk.jpg"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/cloudy/bluecloud_up.jpg"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/cloudy/bluecloud_dn.jpg"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/cloudy/bluecloud_rt.jpg"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/cloudy/bluecloud_lf.jpg"),
+      side: THREE.BackSide,
+    }),
+  ];
+  const matnight = [
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/nightskycolor.png"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/nightskycolor.png"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/nightskycolor.png"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/nightskycolor.png"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/nightskycolor.png"),
+      side: THREE.BackSide,
+    }),
+    new THREE.MeshBasicMaterial({
+      map: loader.load("Assets/nightskycolor.png"),
+      side: THREE.BackSide,
+    }),
+  ];
 
-    let switcher = false
-    const switchSky = (event) => {
-        if (event.key === ' '){
-            if (!switcher){
-                mesh.material = matnight
-                scene.add(mesh)
-                switcher = true
-            }else{
-                mesh.material = matday
-                scene.add(mesh)
-                switcher = false
-            }
-        }
-    };
+  const mesh = new THREE.Mesh(geo, matday);
+  scene.add(mesh);
+
+  let switcher = false;
+  const switchSky = (event) => {
+    if (event.key === " ") {
+      if (!switcher) {
+        mesh.material = matnight;
+        scene.add(mesh);
+        switcher = true;
+      } else {
+        mesh.material = matday;
+        scene.add(mesh);
+        switcher = false;
+      }
+    }
+  };
 
   document.addEventListener("keypress", switchSky);
 };
